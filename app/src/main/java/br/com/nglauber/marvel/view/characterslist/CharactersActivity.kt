@@ -67,6 +67,6 @@ class CharactersActivity : AppCompatActivity() {
                 recyclerCharacters.layoutManager.onRestoreInstanceState(recyclerState)
                 recyclerState = null
             }
-        }}
+        })
     }
 }
