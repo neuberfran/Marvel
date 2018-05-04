@@ -12,9 +12,9 @@ import br.com.nglauber.marvel.model.api.MarvelApi.loadCharacters
 
 class CharactersActivity : AppCompatActivity() {
 
-    private val viewModel: CharactersViewModel by lazy({
+    private val viewModel: CharactersViewModel by lazy {
         ViewModelProviders.of(this).get(CharactersViewModel::class.java)
-    })
+    }
 
     private val adapter: CharactersAdapter by lazy {
         CharactersAdapter()
