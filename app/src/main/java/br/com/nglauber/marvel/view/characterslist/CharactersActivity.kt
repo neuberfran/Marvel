@@ -1,5 +1,6 @@
 package br.com.nglauber.marvel.view.characterslist
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcelable
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import br.com.nglauber.marvel.R
 import br.com.nglauber.marvel.model.api.MarvelApi.loadCharacters
+import kotlinx.android.synthetic.main.activity_characters.*
 
 class CharactersActivity : AppCompatActivity() {
 
@@ -28,19 +30,24 @@ class CharactersActivity : AppCompatActivity() {
 
         val llm = LinearLayoutManager(this)
         recyclerCharacters.layoutManager = llm
-//      recyclerCharacters.adapter = Companion.adapter
-        
         recyclerCharacters.adapter = adapter
         recyclerCharacters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 val lastVisibleItemPosition = llm.findLastVisibleItemPosition()
-//                if (lastVisibleItemPosition == Companion.adapter.itemCount - 1 && !viewModel.isLoading) {
                   if (lastVisibleItemPosition == adapter.itemCount - 1 && !viewModel.isLoading) {
-                    Log.d("NGVL", "Loading more...")
                     loadCharacters(viewModel.currentPage + 1)
 
                 }
+            }
+        })
+        viewModel.getCharacters().observe(this, Observer { characters ->
+            characters?.let {
+                adapter.setItems(characters)
+            }
+            if (recyclerState != null) {
+                recyclerCharacters.layoutManager.onRestoreInstanceState(recyclerState)
+                recyclerState = null
             }
         })
         loadCharacters(0)
@@ -57,16 +64,6 @@ class CharactersActivity : AppCompatActivity() {
     }
 
     private fun loadCharacters(page: Int) {
-//        viewModel.load(page)
-        viewModel.load(page, {  characters ->
-            characters.forEach{ character ->
-                Log.d("NGVL", "${character.id} - ${character.name}")
-                adapter.add(character)
-            }
-            if (recyclerState != null) {
-                recyclerCharacters.layoutManager.onRestoreInstanceState(recyclerState)
-                recyclerState = null
-            }
-        })
+        viewModel.load(page)
     }
 }

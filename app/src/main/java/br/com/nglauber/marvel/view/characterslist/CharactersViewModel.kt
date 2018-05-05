@@ -27,7 +27,7 @@ class CharactersViewModel : ViewModel() {
         characters.value = emptyList()
     }
 
-    fun load(page: Int, param: (Any) -> Unit) {
+    fun load(page: Int) {
         launch(UI) {
             isLoading = true
             if (page > currentPage) {
